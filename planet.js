@@ -79,7 +79,8 @@ let _update = null;
 
   const chunkWorker = await (async () => {
     const cbs = [];
-    const w = new Worker('chunk-worker.js');
+    const chunkWorkerUrl = app.files['./chunk-worker.js'];
+    const w = new Worker(chunkWorkerUrl);
     w.onmessage = e => {
       const {data} = e;
       const {error, result} = data;
