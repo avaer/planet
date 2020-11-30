@@ -83,7 +83,9 @@ let _update = null;
     const res = await fetch(chunkWorkerUrl);
     const blob = await res.blob();
     const u = URL.createObjectURL(blob);
-    const w = new Worker(u);
+    const w = new Worker(u, {
+      type: 'module',
+    });
     w.onmessage = e => {
       const {data} = e;
       const {error, result} = data;

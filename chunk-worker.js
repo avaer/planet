@@ -1,4 +1,4 @@
-importScripts('./bin/objectize2.js');
+import './bin/objectize2.js';
 
 const subparcelSize = 10;
 const subparcelSizeP1 = subparcelSize+1;
