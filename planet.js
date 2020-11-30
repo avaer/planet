@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {renderer, scene, camera} from 'app';
+import {renderer, scene, camera, app} from 'app';
 import alea from './alea.js';
 
 const localMatrix = new THREE.Matrix4();
@@ -41,7 +41,8 @@ let _update = null;
 
 (async () => {
   const colors = await (async () => {
-    const res = await fetch('./colors.json');
+    const fileUrl = app.files['./colors.json'];
+    const res = await fetch(fileUrl);
     return await res.json();
   })();
 
