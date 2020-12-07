@@ -81,8 +81,44 @@ let _update = null;
     const cbs = [];
     const chunkWorkerUrl = app.files['./chunk-worker.js'];
     const res = await fetch(chunkWorkerUrl);
-    const blob = await res.blob();
-    const u = URL.createObjectURL(blob);
+    let s = await res.text();
+
+    const _mapScript = async script => {
+      const r = /^(\s*import\s*['"])(.+)(['"])/gm;
+      const replacements = await Promise.all(Array.from(script.matchAll(r)).map(async match => {
+        let u = match[2];
+        {
+          u = app.files[u];
+          const res = await fetch(u);
+          let s = await res.text();
+
+          {
+            let u2 = app.files['./bin/objectize.wasm'];
+            const res2 = await fetch(u2);
+            const blob2 = await res2.blob();
+            u2 = URL.createObjectURL(blob2, {
+              type: 'application/octet-stream',
+            });
+            s = s.replace(/'bin\/objectize\.wasm'/, `'${u2}'`);
+          }
+
+          u = URL.createObjectURL(new Blob([s], {
+            type: 'text/javascript',
+          }));
+        }
+        return u;
+      }));
+      let index = 0;
+      script = script.replace(r, function() {
+        return arguments[1] + replacements[index++] + arguments[3];
+      });
+      return script;
+    };
+    s = await _mapScript(s);
+
+    const u = URL.createObjectURL(new Blob([s], {
+      type: 'text/javascript',
+    }));
     const w = new Worker(u, {
       type: 'module',
     });
