@@ -806,7 +806,7 @@ let _update = null;
     coord.z = z;
     coord.index = _getSubparcelIndex(x, y, z);
   };
-  scene.add(mesh);
+  app.object.add(mesh);
 
   let i = 0;
   for (let dx = -chunkDistance; dx <= chunkDistance; dx++) {
